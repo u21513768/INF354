@@ -1,0 +1,145 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Cart
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="mainContent">
+    <ion-button expand="full" color="danger" (click)="resetStorage()">Empty Cart</ion-button>
+
+    <ion-list>
+      <ion-item *ngFor="let item of groupCartItems()">
+        <ion-label>
+          <ion-text color="warning">
+            <h2>{{ item.restaurantName }}</h2>
+          </ion-text>
+          <h3>{{ item.dishName }}</h3>
+          <p>Type - {{ item.type }}</p>
+          <ion-grid>
+            <ion-row>
+              <ion-col><ion-text color="primary">
+                  <p>{{ item.distance }}km</p>
+                </ion-text></ion-col>
+              <ion-col><ion-text color="success">
+                  <p>{{ item.distance * 3.5 | number:'1.0-0' }} min</p>
+                </ion-text></ion-col>
+            </ion-row>
+          </ion-grid>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <p>R{{ item.price | number:'1.2-2' }}</p>
+              </ion-col>
+              <ion-col><ion-text color="medium">
+                  <p>each</p>
+                </ion-text></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><ion-text>
+                  <p>R{{ item.price * item.count | number:'1.2-2' }}</p>
+                </ion-text></ion-col>
+              <ion-col><ion-text color="medium">
+                  <p>{{ 'x' + item.count }}</p>
+                </ion-text></ion-col>
+            </ion-row>
+          </ion-grid>
+
+        </ion-label>
+        <ion-thumbnail slot="start">
+          <img src="../../assets/img/{{ item.dishName}}.jpg">
+        </ion-thumbnail>
+        <ion-icon name="trash" color="danger" slot="end" (click)="removeItem(item)"></ion-icon>
+      </ion-item>
+
+
+    </ion-list>
+    <div *ngIf="cartItems.length === 0">
+      <div class="ion-text-center">
+        <h2>No items in cart</h2>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="cartItems.length > 0">
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="4"><ion-text color="primary">
+              <p>Items Total </p>
+            </ion-text></ion-col>
+          <ion-col size="4">
+            <p>R{{totalPrice | number:'1.2-2' }}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="4"><ion-text color="primary">
+              <p>Delivery Fee </p>
+            </ion-text></ion-col>
+          <ion-col size="4">
+            <p>R{{deliveryFee | number:'1.2-2'}}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="4"><ion-text color="primary">
+              <p>Total Price </p>
+            </ion-text></ion-col>
+          <ion-col size="4"><ion-text>
+              <p>R{{totalPrice + deliveryFee | number:'1.2-2' }}</p>
+            </ion-text></ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-item>
+            <ion-col>
+              <ion-label position="stacked"><ion-text color="primary">Delivery Instructions</ion-text></ion-label>
+              <ion-input placeholder="Delivery Instructions" [(ngModel)]="deliveryInstructions"></ion-input>
+            </ion-col>
+          </ion-item>
+        </ion-row>
+      </ion-grid>
+
+    </ion-item>
+    <ion-item>
+      <ion-icon name="business-outline" slot="start"></ion-icon> <!-- Building icon -->
+      <ion-select label="Deliver to" placeholder="Select Address" labelPlacement="stacked" [(ngModel)]="activeIndex"
+        interface="popover">
+        <ion-select-option *ngFor="let address of addresses; let i = index" [value]="i">
+          {{ address }} <ion-icon name="checkmark" *ngIf="activeIndex === i"></ion-icon>
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Payment Method</ion-label>
+      <ion-select [(ngModel)]="paymentMethod">
+        <ion-select-option value="credit">Credit Card</ion-select-option>
+        <ion-select-option value="debit">Debit Card</ion-select-option>
+        <ion-select-option value="paypal">Paypal</ion-select-option>
+      </ion-select>
+      <ion-button (click)="orderItems(true)" [disabled]="cartItems.length === 0" fill="outline"
+        color="success">Order</ion-button>
+    </ion-item>
+  </div>
+
+  <!-- Order complete modal-->
+  <ion-modal [isOpen]="isModalOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Order Complete</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="setOpen(false)">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <p>
+          Payment Successful and order has been placed. An amount of <ion-text color="warning">R{{finalPrice |
+            number:'1.2-2'}}</ion-text> has been deducted from your account.
+          You have given the following delivery instructions: <ion-text color="primary">{{ deliveryInstructions ?
+            deliveryInstructions : 'none' }}</ion-text>
+        </p>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

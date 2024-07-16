@@ -1,0 +1,63 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>
+      Home
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="image-container">
+    <img src="../../assets/img/home.jpg" alt="Your Image">
+    <!-- Reset button overlaying the image -->
+    <!-- <ion-button (click)="resetStorage()" class="reset-button">Reset</ion-button> -->
+  </div>
+  <ion-item>
+    <ion-grid>
+      <ion-row>
+        <ion-col><ion-label><ion-text color="dark">
+              <h2>Restuarants Nearby:</h2>
+            </ion-text></ion-label></ion-col>
+
+      </ion-row>
+      <ion-row>
+        <ion-col><ion-label><ion-text color="medium"><i>
+                <h3>Find unique tastes near you</h3>
+              </i></ion-text></ion-label></ion-col>
+      </ion-row>
+    </ion-grid>
+
+  </ion-item>
+  <ion-list>
+    <ion-item *ngFor="let foodItem of foodItems">
+      <ion-label (click)="handleClick(foodItem)">
+        <h4>{{ foodItem.restaurantName }}</h4>
+        <h5>{{ foodItem.dishName }}</h5>
+        <p>{{ foodItem.type }}</p>
+        <ion-grid>
+          <ion-row>
+            <ion-col>{{ foodItem.ratings }} <ion-text color="warning"><ion-icon
+                  name="star-half"></ion-icon></ion-text></ion-col>
+            <ion-col size="8"><ion-text color="primary">
+                <p>Distance: {{ foodItem.distance }}km</p>
+              </ion-text></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><ion-text color="success">
+                <p>R{{ foodItem.price | number:'1.2-2' }}</p>
+              </ion-text></ion-col>
+            <ion-col size="8"><ion-text color="danger">
+                <p>{{ foodItem.distance * 3.5 | number:'1.0-0' }} min</p>
+              </ion-text></ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-label>
+      <ion-thumbnail slot="start">
+        <!-- <img [src]="getFoodImage(foodItem.dishName)"> -->
+        <img src="../../assets/img/{{ foodItem.dishName}}.jpg">
+      </ion-thumbnail>
+      <img slot="end" src="../../assets/img/{{ foodItem.restaurantName}}.jpg" class="circle-image">
+    </ion-item>
+  </ion-list>
+
+</ion-content>

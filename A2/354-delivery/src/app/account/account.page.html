@@ -1,0 +1,235 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>
+      Account
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-row>
+          <ion-col>
+            {{ profile.name }} {{ profile.surname }}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <sub>{{ profile.phone | phoneNumber }} | {{ profile.email }}</sub>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+      <ion-col size="auto">
+        <ion-button (click)="openProfile()" fill="clear">Edit</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-list>
+    <ion-item-group>
+      <ion-item-divider (click)="toggleManageAddresses()">
+        <ion-label>Manage Addresses</ion-label>
+        <ion-icon slot="end" [name]="isManageAddressesOpen ? 'chevron-up' : 'chevron-down'"></ion-icon>
+      </ion-item-divider>
+      <ng-container *ngIf="isManageAddressesOpen">
+        <!-- Active Address -->
+        <ion-item>
+          <ion-select label="Active Address" labelPlacement="stacked" [(ngModel)]="activeIndex" interface="popover">
+            <ion-select-option *ngFor="let address of addresses; let i = index" [value]="i">
+              {{ address }} <ion-icon name="checkmark" *ngIf="activeIndex === i"></ion-icon>
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ng-container>
+    </ion-item-group>
+  </ion-list>
+  <ion-item>
+    <ion-grid>
+      <ion-row>
+        <ion-col><ion-text>Past Orders</ion-text></ion-col>
+        <ion-col size="auto"><ion-button (click)="resetStorage()" fill="clear" color="danger">Reset
+            Orders</ion-button></ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
+  <ion-list>
+    <ion-item *ngFor="let item of orderItems; let i = index">
+      <ion-label>
+        <ion-item>
+          <ion-text color="warning">
+            <h1>Order {{ i + 1 }}</h1>
+          </ion-text>
+        </ion-item>
+        <ion-item-divider>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <div *ngFor="let subItem of groupFoodItems(item)" style="display: flex; align-items: center;">
+                  <ion-item-divider>
+                    <ion-thumbnail style="border-radius: 50%; width: 50px; height: 50px; margin-right: 10px;"
+                      slot="start">
+                      <img style="border-radius: 50%;"  src="../../assets/img/{{ subItem.dishName}}.jpg">
+                    </ion-thumbnail>
+                    <ion-label>
+                      <ion-text color="danger">
+                        <h2>{{ subItem.restaurantName }}</h2>
+                      </ion-text>
+                      <h3>{{ subItem.dishName }}</h3>
+                      <p>Quantity: {{ 'x' + subItem.count }}</p>
+                      <p>R{{ subItem.price * subItem.count | number:'1.2-2' }}</p>
+                    </ion-label>
+                    <div style="margin-left: auto; display: flex; align-items: center;">
+                      <p style="margin-right: 5px;">Delivered</p>
+                      <ion-text color="success"><ion-icon name="checkmark"></ion-icon></ion-text>
+                    </div>
+                  </ion-item-divider>
+                </div>
+                <ion-row class="ion-padding-top">
+                  <ion-col>
+                    <ion-text color="warning">
+                      <p>Payment Method:</p>
+                    </ion-text>
+                  </ion-col>
+                  <ion-col>
+                    <div>{{item.paymentMethod}}</div>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-text color="warning">
+                      <p>Delivery Fee:</p>
+                    </ion-text>
+                  </ion-col>
+                  <ion-col>
+                    <!-- R{{item.totalPrice - item.totalPrice * (1/1.15) | number:'1.2-2'}} -->
+                    R{{ 25 | number:'1.2-2' }}
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-text color="warning">
+                      <p>Total Price:</p>
+                    </ion-text>
+                  </ion-col>
+                  <ion-col>
+                    R{{item.totalPrice | number:'1.2-2'}}
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item-divider>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <div>
+                Delivered to <ion-text color="medium"><i>{{item.location}}</i></ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="ion-padding-top">
+              <div>
+                <ion-text color="medium"><sub>{{item.date | date: 'MMM dd yyyy hh:mm a'}}</sub></ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col> <ion-button expand="block" (click)="buyItems(item)" fill="outline"
+                color="success">Reorder</ion-button></ion-col>
+            <ion-col><ion-button expand="block" (click)="setOpen(true)" fill="outline" color="danger">Get
+                Help</ion-button></ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <div *ngIf="orderItems.length === 0">
+    <div class="ion-text-center"><h2>No orders found</h2></div>
+  </div>
+
+  <!-- <app-explore-container name="Account page"></app-explore-container> -->
+  <ion-modal [isOpen]="isModalOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title><ion-text color="warning">Help Service</ion-text></ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="setOpen(false)">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div>
+          <div class="ion-text-center"><ion-text color="danger"><h1><ion-icon name="alert-circle-outline"></ion-icon></h1></ion-text></div>
+          Unfortunately our help services are currently unavailable. Please try again later.
+          However, you can still contact us at <a href="http://www.staggeringbeauty.com" target="_blank"> 
+            seizure.com</a> <br/><ion-text color="medium"> <sub> Please do not click on this link, you may have a seizure</sub> </ion-text><br/><br/> or follow these steps:
+            <ion-text color="medium"><ol>
+              <li>Check your internet connection</li>
+              <li>Restart the app</li>
+              <li>Check your email for a response</li>
+              <li>Realise there is no response</li>
+              <li>Lay down in the fetal position</li>
+              <li>Rock back and forth</li>
+              <li>Try not to cry...a lot</li>
+              <li>Realise that you are the only one who can help yourself</li>
+              <li>Get up and try again</li>
+            </ol></ion-text>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal [isOpen]="editProfile">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancelEdit()">Cancel</ion-button>
+          </ion-buttons>
+          <ion-title>Edit Profile</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="editProfileDetails()">Save</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-input label="Enter your name" labelPlacement="stacked" type="text" placeholder="Your name"
+          [(ngModel)]="name"></ion-input>
+        <ion-input label="Enter your surname" labelPlacement="stacked" type="text" placeholder="Your surname"
+          [(ngModel)]="surname"></ion-input>
+        <ion-input label="Enter your email" labelPlacement="stacked" type="text" placeholder="email@example.com"
+          [(ngModel)]="email"></ion-input>
+        <ion-input label="Telephone input" labelPlacement="stacked" type="tel" placeholder="888-888-8888"
+          [(ngModel)]="phone"></ion-input>
+        <!-- Input field for adding a new address -->
+        <ion-item>
+          <ion-label position="stacked">Add New Address</ion-label>
+          <ion-input type="text" [(ngModel)]="newAddress"></ion-input>
+        </ion-item>
+        <!-- Button to add the new address -->
+        <ion-item>
+          <ion-grid>
+            <ion-row>
+              <ion-col><ion-button expand="block" fill="clear" (click)="addAddress()">Add</ion-button></ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+        <!-- List of available addresses with delete and set as active options -->
+        <ion-list>
+          <ion-item *ngFor="let address of addresses; let i = index" [class.active]="activeIndex === i">
+            <ion-label>{{ address }}</ion-label>
+            <ion-text color="success"><ion-icon name="checkmark" *ngIf="activeIndex === i"></ion-icon></ion-text>
+            <ion-button slot="end" color="success" fill="outline" (click)="setActiveAddress(i)">Set as Active</ion-button>
+            <ion-button slot="end" color="danger" fill="outline" (click)="deleteAddress(i)">Delete</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>

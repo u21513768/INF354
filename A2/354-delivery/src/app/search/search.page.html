@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Search
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-header>
+  <ion-item>
+    <div class="ion-text-center ion-padding">
+      <sub>Search by restaurant or item or, type in 'all' to get a list of all restaurants. 
+        If the search bar is left blank when using filters, no answers will be returned, use the keyword 'all'</sub>
+    </div>
+  </ion-item>
+  <ion-toolbar>
+    <ion-searchbar placeholder="Search" [(ngModel)]="searchText" (ionClear)="handleClearSearch()"></ion-searchbar>
+    <!-- (ionChange)="filterRestaurants()" -->
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Collapsible filters bar -->
+  <ion-item lines="none" (click)="toggleFilters()">
+    <ion-icon slot="start" [name]="showFilters ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+    <ion-label>Filters</ion-label>
+  </ion-item>
+
+  <!-- Collapsible filters content -->
+  <ion-list *ngIf="showFilters">
+    <ion-item>
+      <ion-label position="stacked">Type</ion-label>
+      <ion-select interface="popover" [(ngModel)]="type">
+        <ion-select-option value="">Clear Selection</ion-select-option>
+        <ion-select-option *ngFor="let type of typeArray" [value]="type">
+          {{ type }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Max Distance (km)</ion-label>
+      <ion-input type="number" [(ngModel)]="maxDistance"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Min Ratings</ion-label>
+      <ion-input type="number" [(ngModel)]="minRating"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Max Price ($)</ion-label>
+      <ion-input type="number" [(ngModel)]="maxPrice"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <!-- Search button -->
+  <ion-button expand="full" (click)="filterRestaurants()">Search</ion-button>
+
+  <!-- List of restaurants -->
+  <ion-list *ngIf="filteredRestaurants.length > 0; else noRestaurantsFound">
+    <ion-item *ngFor="let restaurant of filteredRestaurants">
+      <ion-label (click)="orderItems(restaurant)">
+        <h2>{{ restaurant.restaurantName }}</h2>
+        <h3>{{ restaurant.dishName }}</h3>
+        <p>Type: {{ restaurant.type }}</p>
+        <ion-grid>
+          <ion-row>
+            <ion-col>{{ restaurant.ratings }} <ion-text color="warning"><ion-icon
+                  name="star-half"></ion-icon></ion-text></ion-col>
+            <ion-col size="8"><ion-text color="primary">
+                <p>Distance: {{ restaurant.distance }}km</p>
+              </ion-text></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><ion-text color="success">
+                <p>R{{ restaurant.price | number:'1.2-2' }}</p>
+              </ion-text></ion-col>
+            <ion-col size="8"><ion-text color="danger">
+                <p>{{ restaurant.distance * 3.5 | number:'1.0-0' }} min</p>
+              </ion-text></ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-label>
+      <ion-thumbnail slot="start">
+        <img src="../../assets/img/{{ restaurant.dishName}}.jpg">
+      </ion-thumbnail>
+      <img slot="end" src="../../assets/img/{{ restaurant.restaurantName}}.jpg" class="circle-image">
+    </ion-item>
+  </ion-list>
+  <ng-template #noRestaurantsFound>
+    <div class="ion-text-center">No restaurants match your search</div>
+  </ng-template>
+
+
+  <!-- <app-explore-container name="Search page"></app-explore-container> -->
+</ion-content>

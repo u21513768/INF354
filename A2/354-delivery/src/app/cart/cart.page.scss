@@ -1,0 +1,11 @@
+.footer-container {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: 999; /* Ensure it's above the tabs */
+  }
+
+  .mainContent{
+    overflow-y: auto;
+  }
+  

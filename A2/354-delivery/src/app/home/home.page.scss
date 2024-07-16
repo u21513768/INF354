@@ -1,0 +1,32 @@
+.image-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .image-container img {
+    width: 100%;
+    height: auto;
+  }
+  
+  .reset-button {
+    position: absolute;
+    top: 10px; /* Adjust this value as needed */
+    right: 10px; /* Adjust this value as needed */
+    z-index: 999; /* Ensure button appears above image */
+  }
+
+  .circle-image {
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
+    border-radius: 50%; /* Ensures the image is displayed as a circle */
+  }
+
+  .custom-toast {
+    --background: white; /* Background color */
+    --color: green; /* Text color */
+    --border-color: green; /* Border color */
+  }
+
+  
+  
+  
