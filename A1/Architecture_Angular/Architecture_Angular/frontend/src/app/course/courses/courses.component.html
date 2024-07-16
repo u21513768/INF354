@@ -1,0 +1,21 @@
+<div class="container mt-4 d-flex justify-content-center align-items-center rounded" *ngIf="display" @fade> <!--Quintin d'Hotman de Villiers u21513768-->
+    <div class="card-container">
+        <!-- Loop through each course object -->
+        <div *ngFor="let course of courses" class="card">
+            <!-- Display course details within each card -->
+            <div class="card-header">
+                <h2>{{ course.name }}</h2>
+            </div>
+            <div class="card-body">
+                <p><strong>Description:</strong> {{ course.description }}</p>
+                <p><strong>Duration:</strong> {{ course.duration }}</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <!-- Edit and Delete buttons -->
+                <button (click)="EditCourse(course)" class="btn btn-primary">Edit</button>
+                <button (click)="DeleteCourse(course)" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+</div>

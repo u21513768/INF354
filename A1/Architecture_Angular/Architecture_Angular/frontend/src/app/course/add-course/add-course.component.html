@@ -1,0 +1,23 @@
+<div class="container mt-4 rounded"  *ngIf="display" @fade> <!--Quintin d'Hotman de Villiers u21513768-->
+  <h2>Add New Course</h2>
+  <form (submit)="onSubmit()">
+    <div class="form-group">
+      <label for="name" style="font-weight: bold;">Name:</label>
+      <input type="text" class="form-control" id="name" name="name" [(ngModel)]="course.name" required>
+    </div>
+    <br />
+    <div class="form-group">
+      <label for="duration" style="font-weight: bold;">Duration:</label>
+      <input type="text" class="form-control" id="duration" name="duration" [(ngModel)]="course.duration" required>
+    </div>
+    <br />
+    <div class="form-group">
+      <label for="description" style="font-weight: bold;">Description:</label>
+      <textarea class="form-control" id="description" name="description" [(ngModel)]="course.description"
+        required></textarea>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary mb-2">Add Course</button> &nbsp;
+    <button type="button" class="btn btn-secondary mb-2" (click)="onCancel()">Cancel</button>
+  </form>
+</div>
